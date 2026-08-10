@@ -35,16 +35,32 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -P 3306 -uroot -proot --silent; then
+              echo "MySQL is ready"
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Run Flyway migrations
+        env:
+          DB_URL: jdbc:mysql://127.0.0.1:3306/unimart?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: ./mvnw -B flyway:migrate
+
       - name: Run tests
         env:
           SPRING_PROFILES_ACTIVE: local
-          DB_URL: jdbc:mysql://127.0.0.1:3306/unimart
+          DB_URL: jdbc:mysql://127.0.0.1:3306/unimart?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
           DB_USERNAME: root
           DB_PASSWORD: root
           SERVER_PORT: 8080
           APP_ALLOWED_ORIGINS: http://localhost:5173
           JWT_SECRET: VGhpc0lzQVN1ZmZpY2llbnRseUxvbmdTZWN1cmVTZWNyZXQxMjM0NTY3ODkw
           JWT_ACCESS_MINUTES: 15
-          SPRING_FLYWAY_ENABLED: true
-          SPRING_FLYWAY_BASELINE_ON_MIGRATE: false
-        run: ./mvnw -B clean test
+        run: ./mvnw -B test
