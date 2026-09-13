@@ -15,12 +15,12 @@ spring:
     baseline-on-migrate: true
 
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:8080}
 
 app:
-  allowed-origins: ${APP_ALLOWED_ORIGINS}
+  allowed-origins: ${APP_ALLOWED_ORIGINS:http://localhost:5173}
   security:
-    jwt-secret: ${JWT_SECRET}
+    jwt-secret: ${JWT_SECRET:VGhpc0lzQVN1ZmZpY2llbnRseUxvbmdTZWN1cmVTZWNyZXQxMjM0NTY3ODkw}
 
 jwt:
-  access-minutes: ${JWT_ACCESS_MINUTES}
+  access-minutes: ${JWT_ACCESS_MINUTES:15}

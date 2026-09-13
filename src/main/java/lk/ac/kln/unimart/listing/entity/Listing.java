@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lk.ac.kln.unimart.auth.entity.User;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "listings")
@@ -14,103 +14,60 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(name = "title", nullable = false)
+    @Column(nullable = false, length = 160)
     private String title;
 
-    @Column(name = "description")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "price", nullable = false)
+    @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "status", nullable = false)
-    private String status;
-
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", insertable = false, updatable = false)
-    private LocalDateTime updatedAt;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private ListingStatus status = ListingStatus.AVAILABLE;
 
     @Version
-    @Column(name = "version")
-    private Integer version;
+    private Long version;
 
-    // Getters and setters
+    private Instant createdAt;
+    private Instant updatedAt;
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public User getSeller() { return seller; }
+    public void setSeller(User seller) { this.seller = seller; }
 
-    public User getSeller() {
-        return seller;
-    }
+    public Category getCategory() { return category; }
+    public void setCategory(Category category) { this.category = category; }
 
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public Category getCategory() {
-        return category;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 
-    public String getTitle() {
-        return title;
-    }
+    public ListingStatus getStatus() { return status; }
+    public void setStatus(ListingStatus status) { this.status = status; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
-    public String getDescription() {
-        return description;
-    }
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
 }
